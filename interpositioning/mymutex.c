@@ -9,20 +9,38 @@
 #include <unistd.h>
 
 int
-pthread_mutex_lock(pthread_mutex_t * mutex_add)
+pthread_mutex_lock(pthread_mutex_t * mutex)
 {
-	int (*pthread_mutex_lockp)(pthread_mutex_t * mutex_add);
+	int (*pthread_mutex_lockp)(pthread_mutex_t * mutex);
 
 	char * error;
 	
 	pthread_mutex_lockp = dlsym(RTLD_NEXT, "pthread_mutex_lock");
 	if ((error = dlerror()) != 0x0)
 		exit(1);
-	int tmp = pthread_mutex_lockp(mutex_add);
+	int tmp = pthread_mutex_lockp(mutex);
 
 	char buf[50];
-	printf("mutexlock : (%p)\n", mutex_add);
+	printf("mutex_lock : %p\n", mutex);
 	fputs(buf, stderr);
 
 	return tmp ;
+}
+
+int
+pthread_mutex_unlock(pthread_mutex_t * mutex)
+{
+	int (*pthread_mutex_unlockp)(pthread_mutex_t * mutex);
+	char * error;
+
+	pthread_mutex_unlockp = dlsym(RTLD_NEXT, "pthread_mutex_unlock");
+	if ((error = dlerror()) != 0x0)
+		exit(1);
+	int tmp = pthread_mutex_unlockp(mutex);
+
+	char buf[50];
+	printf("mutex_unlock : %p\n", mutex);
+	fputs(buf, stderr);
+
+	return tmp;
 }

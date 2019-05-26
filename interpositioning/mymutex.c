@@ -11,16 +11,17 @@
 int
 pthread_mutex_lock(pthread_mutex_t * mutex_add)
 {
-	int (*pthread_mutex_lock_p)(pthread_mutex_t *);
+	int (*pthread_mutex_lockp)(pthread_mutex_t * mutex_add);
+
 	char * error;
 	
-	pthread_mutex_lock_p = dlsym(RTLD_NEXT, "pthread_mutex_lock");
+	pthread_mutex_lockp = dlsym(RTLD_NEXT, "pthread_mutex_lock");
 	if ((error = dlerror()) != 0x0)
 		exit(1);
-	int tmp = pthead_mutex_lock_p(mutex_add);
+	int tmp = pthread_mutex_lockp(mutex_add);
 
 	char buf[50];
-	printf("mutexlock : (%s)\n", *mutex_add);
+	printf("mutexlock : (%p)\n", mutex_add);
 	fputs(buf, stderr);
 
 	return tmp ;

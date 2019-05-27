@@ -8,11 +8,23 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/syscall.h>
+
+void
+mutex_record(pthread_mutex_t * mutex)
+{
+
+}
+
+
 int
 pthread_mutex_lock(pthread_mutex_t * mutex)
 {
-	int (*pthread_mutex_lockp)(pthread_mutex_t * mutex);
+	pid_t ctid = syscall(SYS_gettid);
+	printf("thread: %d", ctid);
 
+	int (*pthread_mutex_lockp)(pthread_mutex_t * mutex);
 	char * error;
 	
 	pthread_mutex_lockp = dlsym(RTLD_NEXT, "pthread_mutex_lock");
@@ -30,6 +42,9 @@ pthread_mutex_lock(pthread_mutex_t * mutex)
 int
 pthread_mutex_unlock(pthread_mutex_t * mutex)
 {
+	pid_t ctid = syscall(SYS_gettid);
+	printf("thread: %d", ctid);
+
 	int (*pthread_mutex_unlockp)(pthread_mutex_t * mutex);
 	char * error;
 

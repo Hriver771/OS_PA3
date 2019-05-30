@@ -31,26 +31,43 @@ static int stack[NUMOFTHREAD][NUMOFMUTEX] = {
     [0 ... NUMOFTHREAD-1] = { [0 ... NUMOFMUTEX-1] = -1 }
 };
 
-int visit[NUMOFMUTEX];
-
 int
-is_cycle_dfs(int node)
+isCyclicUtil(int v, int visited[], int *recStack)
 {
-    visit[node] = 1;
-    if(node < NUMOFMUTEX) 
+    if(visited[v] == FALSE)
     {
-        for(int i=0; i<NUMOFMUTEX; i++) 
-        {
-            if(graph[node][i] == 1) 
+        visited[v] = TRUE;
+        recStack[v] = TRUE;
+        
+        for(int i=0; i<NUMOFMUTEX; i++){
+            if(graph[v][i] == 1)
             {
-                if(visit[i] == 1)
-                    return 1;
-                if(is_cycle_dfs(i) == 1)
-                    return 1;
+                if(!visited[i] && isCyclicUtil(i, visited, recStack))
+                    return TRUE;
+                else if (recStack[i])
+                    return TRUE;
             }
         }
+        
     }
+    recStack[v] = FALSE;
+    return FALSE;
 }
+
+// This function is a variation of DFS() in https://www.geeksforgeeks.org/archives/18212
+int
+isCyclic()
+{
+    int visited[NUMOFMUTEX] = { [0 ... NUMOFMUTEX-1] = 0 };
+    int recStack[NUMOFMUTEX] = { [0 ... NUMOFMUTEX-1] = 0 };
+    
+    for(int i = 0; i < NUMOFMUTEX; i++)
+        if (isCyclicUtil(i, visited, recStack))
+            return TRUE;
+    
+    return FALSE;
+}
+
 
 void
 mk_edge(int from, int to)
@@ -127,14 +144,14 @@ pthread_mutex_lock(pthread_mutex_t * mutex)
         }
     }
 
-//    printf("\n");
-//    print_mutex_graph();
-
-    memset(visit, 0, NUMOFMUTEX);
-    int cycle = is_cycle_dfs(0);
-    if(cycle == 1)
+    int cycle = isCyclic();
+    if(cycle == TRUE) {
         printf("ERROR(cyclic deadlock detector) : DEADLOCK\n");
-
+        printf("----------------------------------------------\n");
+        print_mutex_graph();
+        printf("----------------------------------------------\n");
+    }
+ 
     int (*pthread_mutex_lockp)(pthread_mutex_t * mutex);
     char * error;
 	

@@ -14,7 +14,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define NUMOFMUTEX 10
+#define NUMOFMUTEX 100
 #define NUMOFTHREAD 10
 
 static pthread_t threads[NUMOFTHREAD];
@@ -147,8 +147,8 @@ pthread_mutex_lock(pthread_mutex_t * mutex)
     int cycle = isCyclic();
     if(cycle == TRUE) {
         printf("ERROR(cyclic deadlock detector) : DEADLOCK\n");
-        printf("----------------------------------------------\n");
-        print_mutex_graph();
+//        printf("----------------------------------------------\n");
+//        print_mutex_graph();
         printf("----------------------------------------------\n");
     }
  

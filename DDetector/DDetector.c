@@ -149,7 +149,7 @@ pthread_mutex_lock(pthread_mutex_t * mutex)
         printf("ERROR(cyclic deadlock detector) : DEADLOCK\n");
 //        printf("----------------------------------------------\n");
 //        print_mutex_graph();
-        printf("----------------------------------------------\n");
+//        printf("----------------------------------------------\n");
     }
  
     int (*pthread_mutex_lockp)(pthread_mutex_t * mutex);
